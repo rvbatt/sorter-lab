@@ -4,6 +4,7 @@
 
 void randomize_array(unsigned array[], short len, unsigned min, unsigned max);
 void print_array(unsigned array[], short len);
+int compare_unsigned(const void *left, const void *right);
 
 int main(int argc, char *argv[]) {
     unsigned array[16];
@@ -20,7 +21,17 @@ int main(int argc, char *argv[]) {
     print_array(array, 16);
     printf("\n");
 
+    qsort(array, 16, sizeof(unsigned), compare_unsigned);
+
+    printf("Sorted Array: ");
+    print_array(array, 16);
+    printf("\n");
+
     return 0;
+}
+
+int compare_unsigned(const void *left, const void *right) {
+    return (*(unsigned *)left - *(unsigned *)right);
 }
 
 void randomize_array(unsigned array[], short len, unsigned min, unsigned max) {
