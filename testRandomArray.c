@@ -3,8 +3,10 @@
 #include <time.h>
 #include <string.h>
 
-void randomize_array(unsigned *array, short len, unsigned min, unsigned max);
 void print_array(unsigned *array, short len);
+void randomize_array(unsigned *array, short len, unsigned min, unsigned max);
+double sort_array(const char *algorithm, unsigned *array, short len);
+
 int compare_unsigned(const void *left, const void *right);
 
 int main(int argc, char *argv[]) {
@@ -17,6 +19,7 @@ int main(int argc, char *argv[]) {
     short len;
     unsigned *array;
     char *debug;
+    double benchmarkTime;
 
     if (argc < 2) {
         len = 16;
@@ -47,21 +50,21 @@ int main(int argc, char *argv[]) {
     print_array(array, len);
     printf("\n");
 
-    clock_t startTick = clock();
-    qsort(array, len, sizeof(unsigned), compare_unsigned);
-    clock_t endTick = clock();
-    double timeDelta = (double)(endTick - startTick) / CLOCKS_PER_SEC;
+    benchmarkTime = sort_array("benchmark", array, len);
 
     printf("Sorted Array: ");
     print_array(array, len);
-    printf("\nCPU Time: %lfs\n", timeDelta);
+    printf("\nBenchmark CPU Time: %lfs\n", benchmarkTime);
 
     free(array);
     return 0;
 }
 
-int compare_unsigned(const void *left, const void *right) {
-    return (*(unsigned *)left - *(unsigned *)right);
+void print_array(unsigned *array, short len) {
+    (void) printf("[");
+    for (short i = 0; i < len - 1; ++i)
+        (void) printf("%u, ", array[i]);
+    (void) printf("%u]", array[len - 1]);
 }
 
 void randomize_array(unsigned *array, short len, unsigned min, unsigned max) {
@@ -75,9 +78,21 @@ void randomize_array(unsigned *array, short len, unsigned min, unsigned max) {
     }
 }
 
-void print_array(unsigned *array, short len) {
-    (void) printf("[");
-    for (short i = 0; i < len - 1; ++i)
-        (void) printf("%u, ", array[i]);
-    (void) printf("%u]", array[len - 1]);
+double sort_array(const char *algorithm, unsigned *array, short len) {
+    clock_t startTick, endTick;
+
+    if (strcmp(algorithm, "benchmark") == 0) {
+        startTick = clock();
+        qsort(array, len, sizeof(unsigned), compare_unsigned);
+        endTick = clock();
+    } else {
+        printf("Unknown sorting algorithm: %s\n", algorithm);
+        return -1;
+    }
+
+    return (double)(endTick - startTick) / CLOCKS_PER_SEC;
+}
+
+int compare_unsigned(const void *left, const void *right) {
+    return (*(unsigned *)left - *(unsigned *)right);
 }
