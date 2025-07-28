@@ -47,11 +47,14 @@ int main(int argc, char *argv[]) {
     print_array(array, len);
     printf("\n");
 
+    clock_t startTick = clock();
     qsort(array, len, sizeof(unsigned), compare_unsigned);
+    clock_t endTick = clock();
+    double timeDelta = (double)(endTick - startTick) / CLOCKS_PER_SEC;
 
     printf("Sorted Array: ");
     print_array(array, len);
-    printf("\n");
+    printf("\nCPU Time: %lfs\n", timeDelta);
 
     free(array);
     return 0;
