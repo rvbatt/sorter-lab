@@ -1,4 +1,10 @@
 #include "sorting.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+int compare_unsigned(const void *left, const void *right);
 
 double sort_array(const char *algorithm, unsigned *array, short len) {
     clock_t startTick, endTick;
