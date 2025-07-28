@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include "sorting.h"
 
 void print_array(unsigned *array, short len);
 void randomize_array(unsigned *array, short len, unsigned min, unsigned max);
-double sort_array(const char *algorithm, unsigned *array, short len);
 
 int compare_unsigned(const void *left, const void *right);
 
@@ -76,23 +76,4 @@ void randomize_array(unsigned *array, short len, unsigned min, unsigned max) {
         offset = (unsigned) (randFrac * (max + 1 - min));
         array[i] = min + offset;
     }
-}
-
-double sort_array(const char *algorithm, unsigned *array, short len) {
-    clock_t startTick, endTick;
-
-    if (strcmp(algorithm, "benchmark") == 0) {
-        startTick = clock();
-        qsort(array, len, sizeof(unsigned), compare_unsigned);
-        endTick = clock();
-    } else {
-        printf("Unknown sorting algorithm: %s\n", algorithm);
-        return -1;
-    }
-
-    return (double)(endTick - startTick) / CLOCKS_PER_SEC;
-}
-
-int compare_unsigned(const void *left, const void *right) {
-    return (*(unsigned *)left - *(unsigned *)right);
 }
