@@ -7,12 +7,10 @@
 void print_array(unsigned *array, short len);
 void randomize_array(unsigned *array, short len, unsigned min, unsigned max);
 
-int compare_unsigned(const void *left, const void *right);
-
 int main(int argc, char *argv[]) {
     /*
     Usage:
-    $ testRandomArray (<length>) (<seed>)
+    $ testSorting (<length>) (<seed>)
         <length> (optional): length of the random array that will be tested. Default is 16;
         <seed> (optional): the seed for the pseudorandom number generator.
     */
