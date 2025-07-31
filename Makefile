@@ -18,4 +18,4 @@ sorting.o: sorting.c sorting.h
 
 .PHONY: clean
 clean:
-	rm -rf *.o *.so
+	rm -rf *.o *.gch
