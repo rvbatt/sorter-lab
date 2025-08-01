@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
         <length> (optional) = length of the random array that will be tested. Default is 16;
         <seed> (optional) = the seed for the pseudorandom number generator.
     */
-    short len;
+    short len = 16;
     unsigned *unsorted, *sorted, *toSort;
     char *algorithm, *debug;
     double benchmarkTime, testTime;
@@ -29,9 +29,7 @@ int main(int argc, char *argv[]) {
         algorithm = argv[1];
     }
 
-    if (argc < 3) {
-        len = 16;
-    } else {
+    if (argc >= 3) {
         len = (short) strtol(argv[2], &debug, 10);
         if (strcmp(debug, "\0") != 0) {
             printf("Invalid character in length: %s\n", debug);
@@ -91,7 +89,7 @@ void randomize_array(unsigned *array, short len, unsigned min, unsigned max) {
     double randFrac;
     unsigned offset;
 
-    for (unsigned short i = 0; i < len; ++i) {
+    for (short i = 0; i < len; ++i) {
         randFrac = (double) rand() / ((double) RAND_MAX + 1);
         offset = (unsigned) (randFrac * (max + 1 - min));
         array[i] = min + offset;
