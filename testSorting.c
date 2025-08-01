@@ -10,51 +10,73 @@ void randomize_array(unsigned *array, short len, unsigned min, unsigned max);
 int main(int argc, char *argv[]) {
     /*
     Usage:
-    $ testSorting (<length>) (<seed>)
-        <length> (optional): length of the random array that will be tested. Default is 16;
-        <seed> (optional): the seed for the pseudorandom number generator.
+    $ ./testSorting.exe <algorithm> (<length>) (<seed>)
+    where
+        <algorithm> = sorting algorithm to be tested. Must be one of:
+            benchmark (default implementation)
+        <length> (optional) = length of the random array that will be tested. Default is 16;
+        <seed> (optional) = the seed for the pseudorandom number generator.
     */
     short len;
-    unsigned *array;
-    char *debug;
-    double benchmarkTime;
+    unsigned *unsorted, *sorted, *toSort;
+    char *algorithm, *debug;
+    double benchmarkTime, testTime;
 
     if (argc < 2) {
-        len = 16;
-    }
-    else {
-        len = (short) strtol(argv[1], &debug, 10);
-        if (strcmp(debug, "\0") != 0) {
-            printf("Invalid character in length: %s\n", debug);
-            return 1;
-        }
+        printf("Missing algorithm argument. Abort.\n");
+        return 1;
+    } else {
+        algorithm = argv[1];
     }
 
     if (argc < 3) {
-        srand((unsigned) time(NULL));
-    }
-    else {
-        srand((unsigned) strtol(argv[2], &debug, 10));
+        len = 16;
+    } else {
+        len = (short) strtol(argv[2], &debug, 10);
         if (strcmp(debug, "\0") != 0) {
-            printf("Invalid character in seed: %s\n", debug);
+            printf("Invalid character in length: %s\n", debug);
             return 2;
         }
     }
 
-    array = (unsigned*) malloc(len * sizeof(unsigned));
-    randomize_array(array, len, 0, 65535);
+    if (argc < 4) {
+        srand((unsigned) time(NULL));
+    }
+    else {
+        srand((unsigned) strtol(argv[3], &debug, 10));
+        if (strcmp(debug, "\0") != 0) {
+            printf("Invalid character in seed: %s\n", debug);
+            return 3;
+        }
+    }
+
+    unsorted = (unsigned*) malloc(len * sizeof(unsigned));
+    randomize_array(unsorted, len, 0, 65535);
 
     printf("Unsorted Array: ");
-    print_array(array, len);
+    print_array(unsorted, len);
     printf("\n");
 
-    benchmarkTime = sort_array("benchmark", array, len);
+    sorted = (unsigned*) malloc(len * sizeof(unsigned));
+    memcpy(sorted, unsorted, len * sizeof(unsigned));
+    benchmarkTime = sort_array("benchmark", sorted, len);
 
     printf("Sorted Array: ");
-    print_array(array, len);
+    print_array(sorted, len);
     printf("\nBenchmark CPU Time: %lfs\n", benchmarkTime);
 
-    free(array);
+    toSort = (unsigned*) malloc(len * sizeof(unsigned));
+    memcpy(toSort, unsorted, len * sizeof(unsigned));
+    testTime = sort_array(algorithm, toSort, len);
+
+    printf("%s sort array: ", algorithm);
+    print_array(toSort, len);
+    printf("\n%s sort CPU time: %lfs\n", algorithm, testTime);
+
+    free(unsorted);
+    free(sorted);
+    free(toSort);
+
     return 0;
 }
 
