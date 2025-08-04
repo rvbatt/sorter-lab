@@ -13,6 +13,8 @@ double sort_array(const char *algorithm, unsigned *array, short len) {
         startTick = clock();
         qsort(array, len, sizeof(unsigned), compare_unsigned);
         endTick = clock();
+    } else if (strcmp(algorithm, "no") == 0) {
+        return 0.0;
     } else {
         printf("Unknown sorting algorithm: %s\n", algorithm);
         return -1;
