@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
         <length> (optional) = length of the random array that will be tested. Default is 16;
         <seed> (optional) = the seed for the pseudorandom number generator.
     */
+    int returnCode = 0;
     short len = 16;
     unsigned *unsorted, *sorted, *toSort;
     char *algorithm, *debug;
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
 
     printf("Unsorted Array: ");
     print_array(unsorted, len);
-    printf("\n");
+    printf("\n\n");
 
     sorted = (unsigned*) malloc(len * sizeof(unsigned));
     memcpy(sorted, unsorted, len * sizeof(unsigned));
@@ -61,21 +62,31 @@ int main(int argc, char *argv[]) {
 
     printf("Sorted Array: ");
     print_array(sorted, len);
-    printf("\nBenchmark CPU Time: %lfs\n", benchmarkTime);
+    printf("\nBenchmark CPU Time: %lfs\n\n", benchmarkTime);
 
     toSort = (unsigned*) malloc(len * sizeof(unsigned));
     memcpy(toSort, unsorted, len * sizeof(unsigned));
     testTime = sort_array(algorithm, toSort, len);
 
-    printf("%s sort array: ", algorithm);
-    print_array(toSort, len);
-    printf("\n%s sort CPU time: %lfs\n", algorithm, testTime);
+    if (testTime < 0) {
+        printf("Invalid algorithm: %s. Aborting.\n", algorithm);
+        returnCode = 1;
+    } else {
+        if (memcmp(toSort, sorted, len * sizeof(unsigned)) != 0) {
+            printf("SORTING FAILED. %s sort needs checking.\n", algorithm);
+            returnCode = 10;
+        }
+
+        printf("%s sort array: ", algorithm);
+        print_array(toSort, len);
+        printf("\n%s sort CPU time: %lfs\n", algorithm, testTime);
+    }
 
     free(unsorted);
     free(sorted);
     free(toSort);
 
-    return 0;
+    return returnCode;
 }
 
 void print_array(unsigned *array, short len) {
